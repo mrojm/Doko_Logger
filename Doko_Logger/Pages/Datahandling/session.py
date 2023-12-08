@@ -9,7 +9,7 @@ class Session:
         
         #Datendatei name
         #path = ".\\Sessions\\"
-        path = "..\\" + folder + "\\"
+        path = ".\\" + folder + "\\"
         if add_json:
             add_json = ".json"
         else:
@@ -87,7 +87,7 @@ class Session:
             Spiel["Bockrunden"] = len(self.Bockrunden)
             self.Punkte.add_entry(Spiel)     
 
-            self.__update_Bockrunden(Spiel["neue_Bockrunden"])
+            self.__update_Bockrunden(self.Bockrunden, Spiel["neue_Bockrunden"])
             
         
     def log_game(self, Spieler:list, Spieltyp, Gewinner:list, Punkte, nBR):
@@ -115,27 +115,58 @@ class Session:
         self.Punkte.add_entry(game_dict)
 
         #aktuelle Bockrunden updaten
-        self.__update_Bockrunden(nBR)
+        self.__update_Bockrunden(self.Bockrunden, nBR)
     
-    
-    def __update_Bockrunden(self, nBr):
+    def change_game(self, Spielnummer, Spieler:list, Spieltyp, Gewinner:list, Punkte, nBR):
+        if len(self.data["Spiele"]) < Spielnummer:
+            raise spielnummerFehler("Spiel gibt es nicht")
+        
+        BR = len(self.Bockrunden)
+        #DICT erhalten
+        game_dict = self.__dict_Spieleintrag(Spielnummer, Spieler, Spieltyp, Gewinner, Punkte, BR, nBR)
+
+        self.data["Spiele"][Spielnummer-1] = game_dict
+        
+        #DICT in JSON schreiben
+        jsonstring = json.dumps(self.data, indent=3)
+        with open(self.filename,'w') as file:
+            file.write(jsonstring)
+        
+        self.load_session()
+
+    def get_game(self, Spielnummer):
+        if len(self.data["Spiele"]) < Spielnummer:
+            raise spielnummerFehler("Spiel gibt es nicht")
+        
+        Bockrunden = []
+        for Spiel in self.data["Spiele"][:Spielnummer-1]:
+            self.__update_Bockrunden(Bockrunden, Spiel["neue_Bockrunden"])
+        
+        spiel = self.data["Spiele"][Spielnummer-1]
+        spiel["Bockrunden"] = Bockrunden
+
+        return spiel
+
+
+
+    def __update_Bockrunden(self, Bockrunden, nBr):
         #Bockrunden als queue gespeichert, jeder Eintrag enthält Lebensdauer der Bockrunde
         #Bsp.: [1,3,4] -> 3 Bockrunden
 
         #Lebensdauer um einen verringern, falls 0-> aus queue entfernen        
-        lock = len(self.Bockrunden)
+        lock = len(Bockrunden)
         i = 0
         while(i < lock):
-            self.Bockrunden[i] -=1
-            if(self.Bockrunden[i] == 0):
-                self.Bockrunden.pop(0)
+            Bockrunden[i] -=1
+            if(Bockrunden[i] == 0):
+                Bockrunden.pop(0)
                 i -= 1
                 lock -=1
             i +=1
 
         #Neue Bockrunden hinzufügen (Leben so lange, wie Spieler sind)
         for __ in range(nBr):
-            self.Bockrunden.append(self.Spieleranzahl)
+            Bockrunden.append(self.Spieleranzahl)
     
     
     def __dict_Spieleintrag(self, Spiel: int, Spieler:list, Spieltyp, Gewinner:list, Punkte, BR, nBR):

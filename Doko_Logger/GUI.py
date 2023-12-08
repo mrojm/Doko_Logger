@@ -1,11 +1,8 @@
-## Knopf: letztes Spiel verbessern können
-## Datum in Datei speichern
-
 import tkinter as tk
 from tkinter import ttk
-from .Pages.Datahandling import Session
+from Pages.Datahandling import Session
 
-from .Pages import Menu, Players, Gamelog
+from Pages import Menu, Players, Gamelog
 
 LARGEFONT =("Verdana", 35)
 

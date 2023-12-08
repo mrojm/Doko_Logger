@@ -80,7 +80,7 @@ class Gamelog(tk.Frame):
 
 
         #Spiel Eintragen
-        self.speichern = ttk.Button(self, text = "Speichern", command = self.speichern)
+        self.speichern = ttk.Button(self, text = "Speichern", command = self.speichern_callback)
         self.speichern.grid(row = 7, column = 1, padx = 10, pady = 10, columnspan=2, sticky=tk.W)
 
         #Eingabe Punkte mit Bock
@@ -110,11 +110,93 @@ class Gamelog(tk.Frame):
         # Back
         self.back = ttk.Button(self, text ="Zurück",
                             command = lambda : self.controller.show_frame(self.controller.pages[0]))
-        self.back.grid(row = 7, column = 3, padx = 10, pady = 10, columnspan=2, sticky=tk.W)
+        self.back.grid(row = 7, column = 2, padx = 10, pady = 10, columnspan=1, sticky=tk.W)
+
+        #Edit Game
+        self.edit = ttk.Button(self, text="Edit", command=self.edit_callback)
+        self.edit.grid(row = 7, column = 4, padx = 10, pady = 10, columnspan=1, sticky=tk.W)
+
+        self.game_to_edit = ttk.Spinbox(self, from_=1, to_=1000, validate='all', validatecommand=(vcmd, '%P'), width=20)
+        self.game_to_edit.grid(row = 6, column = 4, padx = 10, pady = 10, columnspan=2, sticky=tk.SW)
         
         # putting the button in its place by 
         # using grid
         #button1.grid(row = 1, column = 1, padx = 10, pady = 10)
+
+    def edit_callback(self):
+        if self.speichern.instate(["disabled"]):
+            self.save_game()
+        else:
+            self.load_game()
+        
+    
+    def load_game(self):
+        game = int(self.game_to_edit.get())
+        try:
+            data = self.controller.session.get_game(game)
+
+            self.edit.config(text = "Save")
+
+            self.speichern.state(["disabled"])
+            self.game_to_edit.state(["disabled"])
+            self.clear_inputs()
+
+            for i in range(len(self.Spieler)):
+                if self.Spieler[i] not in data["Spieler"]:
+                    self.button_function(i)
+                if self.Spieler[i] in data["Gewinner"]:
+                    self.checkboxes[i].invoke()
+
+            self.pointinput.set(data["Punkte"])
+            
+            self.bockrundeninput.set(data["neue_Bockrunden"])
+
+            self.clicked.set(data["Spieltyp"])
+
+            self.BR.set(str(data["Bockrunden"]))
+
+        except self.controller.session.spielnummerFehler as e:
+            showinfo("Window", message=str(e))
+        
+    def save_game(self):
+        
+        try:
+            Spieler = []
+            Gewinner = []
+            for i in range(len(self.buttons)):
+                if(not self.button_pressed[i]):
+                    Spieler.append(self.Spieler[i])
+                if(self.checkboxes[i].instate(["selected"])):
+                    Gewinner.append(self.Spieler[i])
+            
+            Punkte = int(self.pointinput.get())
+            Spielmodus = self.clicked.get()
+            neue_Bockrunden = int(self.bockrundeninput.get())
+
+            self.controller.session.change_game(int(self.game_to_edit.get()), Spieler, Spielmodus, Gewinner, Punkte, neue_Bockrunden)
+            
+            #
+            #self.button_update()
+            #self.clear_inputs()
+            self.clear_inputs()
+            self.speichern.state(["!disabled"])
+            self.game_to_edit.state(["!disabled"])
+            for row in self.tree.get_children():
+                self.tree.delete(row)
+
+            self.load_table()
+            #TABELLE NEU ERSTELLEN!!
+            self.edit.config(text = "Edit")
+
+
+        except (self.controller.session.bockFehler,
+                self.controller.session.punkteFehler,
+                self.controller.session.gewinnerAnzahl,
+                self.controller.session.spielnummerFehler,
+                self.controller.session.spielerAnzahl
+                ) as e:
+            showinfo("Window", message=str(e))
+        
 
     def init_table(self):
         # Define column headings
@@ -125,7 +207,9 @@ class Gamelog(tk.Frame):
         #
         self.tree.column(self.table_columns[2], width=70)
         self.tree.column(self.table_columns[-1], width=100)
+        self.load_table()
 
+    def load_table(self):
         # Insert data
         for index, row in self.controller.session.Punkte.df.iterrows():               
             self.tree.insert("", 0, values=(*row.to_list(),))
@@ -185,11 +269,11 @@ class Gamelog(tk.Frame):
             
         self.init_active_players()
 
-    def init_active_players(self):
+    def init_active_players(self, game = -1):
         if self.controller.session.data["Spiele"] == []:
             return
 
-        spieler_letztes_spiel = self.controller.session.data["Spiele"][-1]["Spieler"]
+        spieler_letztes_spiel = self.controller.session.data["Spiele"][game]["Spieler"]
         for i in range(len(self.Spieler)):
             if not self.Spieler[i] in spieler_letztes_spiel:
                 self.button_function(i)
@@ -212,7 +296,7 @@ class Gamelog(tk.Frame):
     def option_callback(self, option):
         self.clicked.set(option)
 
-    def speichern(self):
+    def speichern_callback(self):
         try:
             Spieler = []
             Gewinner = []
