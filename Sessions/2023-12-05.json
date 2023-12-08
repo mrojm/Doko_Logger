@@ -1,0 +1,355 @@
+{
+   "Session_Info": {
+      "Datum": "12/05/2023, 19:50:19",
+      "Spieler": [
+         "Lukas",
+         "Johanna",
+         "Oliver",
+         "Julian",
+         "Andre"
+      ],
+      "Endergebnis": {}
+   },
+   "Spiele": [
+      {
+         "Spiel": 1,
+         "Spieler": [
+            "Johanna",
+            "Oliver",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Julian",
+            "Oliver"
+         ],
+         "Punkte": 3,
+         "Bockrunden": 0,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 2,
+         "Spieler": [
+            "Lukas",
+            "Oliver",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "SOLO",
+         "Gewinner": [
+            "Andre"
+         ],
+         "Punkte": 1,
+         "Bockrunden": 1,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 3,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "SOLO",
+         "Gewinner": [
+            "Lukas",
+            "Johanna",
+            "Andre"
+         ],
+         "Punkte": 4,
+         "Bockrunden": 1,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 4,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Oliver",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Lukas",
+            "Andre"
+         ],
+         "Punkte": 4,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 5,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Oliver",
+            "Julian"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Johanna",
+            "Julian"
+         ],
+         "Punkte": 12,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 6,
+         "Spieler": [
+            "Johanna",
+            "Oliver",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Johanna",
+            "Julian"
+         ],
+         "Punkte": 4,
+         "Bockrunden": 3,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 7,
+         "Spieler": [
+            "Lukas",
+            "Oliver",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Lukas",
+            "Oliver"
+         ],
+         "Punkte": 9,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 8,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Johanna",
+            "Julian"
+         ],
+         "Punkte": 4,
+         "Bockrunden": 3,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 9,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Oliver",
+            "Andre"
+         ],
+         "Spieltyp": "SOLO",
+         "Gewinner": [
+            "Johanna"
+         ],
+         "Punkte": 2,
+         "Bockrunden": 3,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 10,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Oliver",
+            "Julian"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Johanna",
+            "Oliver"
+         ],
+         "Punkte": 9,
+         "Bockrunden": 3,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 11,
+         "Spieler": [
+            "Johanna",
+            "Oliver",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Johanna",
+            "Andre"
+         ],
+         "Punkte": 4,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 12,
+         "Spieler": [
+            "Lukas",
+            "Oliver",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Lukas",
+            "Oliver"
+         ],
+         "Punkte": 6,
+         "Bockrunden": 3,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 13,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "SOLO",
+         "Gewinner": [
+            "Lukas",
+            "Johanna",
+            "Andre"
+         ],
+         "Punkte": 6,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 14,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Oliver",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Johanna",
+            "Andre"
+         ],
+         "Punkte": 5,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 15,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Oliver",
+            "Julian"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Lukas",
+            "Oliver"
+         ],
+         "Punkte": 4,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 16,
+         "Spieler": [
+            "Johanna",
+            "Oliver",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Julian",
+            "Andre"
+         ],
+         "Punkte": 4,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 17,
+         "Spieler": [
+            "Lukas",
+            "Oliver",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Lukas",
+            "Oliver"
+         ],
+         "Punkte": 3,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 0
+      },
+      {
+         "Spiel": 18,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Julian",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Johanna",
+            "Julian"
+         ],
+         "Punkte": 10,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 19,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Oliver",
+            "Andre"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Johanna",
+            "Andre"
+         ],
+         "Punkte": 8,
+         "Bockrunden": 2,
+         "neue_Bockrunden": 1
+      },
+      {
+         "Spiel": 20,
+         "Spieler": [
+            "Lukas",
+            "Johanna",
+            "Oliver",
+            "Julian"
+         ],
+         "Spieltyp": "NORMALSPIEL",
+         "Gewinner": [
+            "Lukas",
+            "Julian"
+         ],
+         "Punkte": 2,
+         "Bockrunden": 3,
+         "neue_Bockrunden": 0
+      }
+   ]
+}
