@@ -1,7 +1,7 @@
 import datetime
 import json
 from os import path
-from points import Points
+from Datahandling.points import Points
 
 class Session:
     
@@ -9,7 +9,7 @@ class Session:
         
         #Datendatei name
         #path = ".\\Sessions\\"
-        path = ".\\" + folder + "\\"
+        path = "..\\" + folder + "\\"
         if add_json:
             add_json = ".json"
         else:
@@ -35,7 +35,7 @@ class Session:
         self.register_exceptions()
         
     
-    def new_session(self, Spieler, force=False, Datum=datetime.datetime.today().strftime("%m/%d/%Y, %H:%M:%S")):
+    def new_session(self, Spieler, force=False, Datum=datetime.datetime.today()):
         
         #Prüfen ob Datei existiert
         if self.session_existent():
@@ -46,7 +46,7 @@ class Session:
                 raise(fileError("File existent"))
 
         #Neues Dict erstellen
-        self.data = self.__dict_new_session(Datum, Spieler)
+        self.data = self.__dict_new_session(Datum.strftime("%m/%d/%Y"), Spieler)
 
         #JSON erstellen und DICT speichern
         jsonstring= json.dumps(self.data, indent=3)

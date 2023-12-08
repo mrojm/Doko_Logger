@@ -10,9 +10,9 @@ class Menu(tk.Frame):
 		tk.Frame.__init__(self, parent)
 		self.controller = controller
 		# label of frame Layout 2
-		label = ttk.Label(self, text ="DoKo Spieletracker\n",font = LARGEFONT)
-		label.place(x=10,y=10,width=400,height=54) 
-		self.size = [300,400]
+		label = ttk.Label(self, text ="DoKo Spieletracker  \n",font = LARGEFONT)
+		label.place(x=10,y=10,width=500,height=54) 
+		self.config( width=500 )
 
 		#Session_Name
 		self.sessionname_input = ttk.Entry(self, width=10)

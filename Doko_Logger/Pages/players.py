@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+import tkcalendar as tkc
+from dateutil.parser import parse
 
 LARGEFONT =("Verdana", 35)
 
@@ -11,6 +13,12 @@ class Players(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text ="Auswahl Spieler", font = LARGEFONT)
         self.Page2 = controller.pages[2]
+        self.config( width=500 )
+
+
+        self.grid_columnconfigure(0, weight = 1)
+        self.grid_columnconfigure(1, weight = 1)
+        self.grid_columnconfigure(2, weight = 1)
 
         #Spieler Ausgabe
                 
@@ -29,14 +37,22 @@ class Players(tk.Frame):
                             command = lambda : [self.Spieler.set(""),self.controller.show_frame(self.controller.pages[0])])
 
 
+        # DatePicker
+        self.date = tkc.DateEntry(self, date_pattern='dd-MM-yyyy')        
+        self.from_name = ttk.Button(self, text = "Sessionname", command = self.take_name)
+
+        self.date.grid(row = 1, column = 0, padx = 10, pady = 10, sticky=tk.S)
+        self.from_name.grid(row = 2, column = 0, padx = 10, pady = 10, sticky=tk.N)
+
+
         #Positions
-        label.grid(row = 0, column = 1, padx = 10, pady = 10)
-        self.Spieler_Output.grid(row = 1, column = 1, padx = 10, pady = 10)
-        self.enter_Spieler.grid(row = 3, column = 1, padx = 10, pady = 10)
-        self.Spieler_Input.grid(row = 2, column = 1, padx = 10, pady = 10)
+        label.grid(row = 0, column = 0, padx = 10, pady = 10, columnspan= 3)
+        self.Spieler_Output.grid(row = 1, column = 1, padx = 10, pady = 10, rowspan=2)
+        self.enter_Spieler.grid(row = 4, column = 1, padx = 10, pady = 10)
+        self.Spieler_Input.grid(row = 3, column = 1, padx = 10, pady = 10)
         # self.session_name.grid(row = 2, column = 2, padx = 10, pady = 10)
-        self.start_game.grid(row = 3, column = 2, padx = 10, pady = 10)
-        self.back.grid(row = 3, column = 0, padx = 10, pady = 10)
+        self.start_game.grid(row = 4, column = 2, padx = 10, pady = 10)
+        self.back.grid(row = 4, column = 0, padx = 10, pady = 10)
     
     def enter_Spieler_callback(self):
         Spielerstring = self.Spieler.get().strip()
@@ -53,8 +69,16 @@ class Players(tk.Frame):
             #session = Session(self.session_name.get())
             # Neue Session Starten
 
-            self.controller.session.new_session(Spieler)
+            self.controller.session.new_session(Spieler, Datum=self.date.get_date())
 
 
             self.controller.build_frame(self.controller.pages[2])
             self.controller.show_frame(self.controller.pages[2])
+
+    def take_name(self):
+        try: 
+            date = parse(self.controller.session.filename, fuzzy=True)
+            self.date.set_date(date)
+
+        except ValueError:
+            return
