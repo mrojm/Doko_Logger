@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import csv
 import pandas as pd
-from .session import Session
+from Datahandling.session import Session
 import json
 
 #from matplotlib import pyplot as plt
@@ -12,7 +12,7 @@ class Stats:
     def __init__(self) -> None:
         self.stats = {}
 
-    def all_session_stats(self):
+    def make_stats(self):
         self.stats = self.global_stats(files = self.get_files(os.path.join(Path.cwd(),'Sessions')))
 
     def save_stats(self, filename, override = False):
@@ -83,72 +83,6 @@ class Stats:
             if os.path.isfile(os.path.join(path, file)):
                 yield file
 
-    def session_stats(self, filename):
-        session = Session(filename, add_json=False)
-        session.load_session()
-
-        Datum = session.data["Session_Info"]["Datum"]
-        Spieler_ = session.Spieler
-        endstand = session.Punkte.df.loc[len(session.Punkte.df)-1]
-
-        Positionen = endstand[Spieler_].sort_values(ascending=False).index
-        dict_pos={Positionen[0]:1}
-        for i in range(1,len(Positionen),1):
-            if endstand[Positionen[i]]==endstand[Positionen[i-1]]:
-                dict_pos[Positionen[i]]=dict_pos[Positionen[i-1]]
-            else:
-                dict_pos[Positionen[i]]=i+1
-
-        # Stats erstellen
-        stats = {}
-        for Spieler in Spieler_:
-            
-            stats[Spieler] = {"Datum":"",
-                              "Runden":0,
-                              "Spieler":0,
-                              "Punkte":0,
-                              "Position":0,
-                              "Siege":0, 
-                              "Soli":0, 
-                              "Soli_gewonnen":0, 
-                              "bestes_Spiel": -10000, 
-                              "schlechtestes_Spiel": 10000
-                              }
-
-
-            #Session_Info
-            stats[Spieler]["Datum"] = Datum
-            stats[Spieler]["Runden"] = endstand["Runde"]
-            stats[Spieler]["Spieler"]= len(Spieler_)
-
-            #Endstand
-            stats[Spieler]["Punkte"] = endstand[Spieler]
-            stats[Spieler]["Position"] = dict_pos[Spieler]
-            
-            #Persönliche Stats
-            for game in session.data["Spiele"]:
-                Punkte = session.Punkte.calc_points(game)
-                if Spieler in game["Spieler"]:
-
-                    # Siege
-                    if Spieler in game["Gewinner"]:
-                        stats[Spieler]["Siege"] += 1
-
-                    # Soli
-                    if game["Spieltyp"] == session.SOLO:
-                        if len(game["Gewinner"])==1 and (Spieler in game["Gewinner"]):
-                            stats[Spieler]["Soli"] += 1
-                            stats[Spieler]["Soli_gewonnen"] += 1
-                        elif len(game["Gewinner"])==3 and not (Spieler in game["Gewinner"]):
-                            stats[Spieler]["Soli"] += 1
-                    
-                    # Bestes Spiel / Schlechtestes Spiel
-                    if Punkte[Spieler] > stats[Spieler]["bestes_Spiel"]:
-                        stats[Spieler]["bestes_Spiel"] = Punkte[Spieler]
-                    if Punkte[Spieler] < stats[Spieler]["schlechtestes_Spiel"]:
-                        stats[Spieler]["schlechtestes_Spiel"] = Punkte[Spieler]
-
-        return stats
 
 
 def test():

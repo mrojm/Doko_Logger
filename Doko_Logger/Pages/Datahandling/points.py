@@ -19,7 +19,8 @@ class Points:
         self.df = pd.DataFrame(columns=self.df_columns)
         #self.df.set_index("Spiel")
 
-    def calc_points(self, data:dict):
+    @staticmethod
+    def calc_points(data:dict):
         points = {}
         Spieler = data["Spieler"]
         Spielmodus = "Normal"

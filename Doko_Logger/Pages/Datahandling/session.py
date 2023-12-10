@@ -2,6 +2,7 @@ import datetime
 import json
 from os import path
 from Datahandling.points import Points
+from Datahandling.session_stats import session_stats
 
 class Session:
     
@@ -147,7 +148,9 @@ class Session:
 
         return spiel
 
-
+    def session_stats(self):
+        # Returns Session stats as dict
+        return session_stats(self)
 
     def __update_Bockrunden(self, Bockrunden, nBr):
         #Bockrunden als queue gespeichert, jeder Eintrag enthält Lebensdauer der Bockrunde
