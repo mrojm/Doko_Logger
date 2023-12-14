@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkcalendar as tkc
 from dateutil.parser import parse
+from tkinter.messagebox import showinfo
 
 LARGEFONT =("Verdana", 35)
 
@@ -68,8 +69,10 @@ class Players(tk.Frame):
             # Session erstellen und Namen auslesen
             #session = Session(self.session_name.get())
             # Neue Session Starten
-
-            self.controller.session.new_session(Spieler, Datum=self.date.get_date())
+            try:
+                self.controller.session.new_session(Spieler, Datum=self.date.get_date())
+            except self.controller.session.SpielerNamen as e:
+                showinfo(str(e))
 
 
             self.controller.build_frame(self.controller.pages[2])

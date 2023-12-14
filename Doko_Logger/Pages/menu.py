@@ -36,6 +36,7 @@ class Menu(tk.Frame):
 		if session_name != "" and not session.session_existent():
 			self.controller.session = session
 			self.controller.show_frame(self.controller.pages[1])
+			self.controller.frames[self.controller.pages[1]].take_name()
 
 	def load_session(self):
 		session_name = self.sessionname_input.get().strip()

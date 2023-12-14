@@ -36,7 +36,7 @@ class Session:
         self.register_exceptions()
         
     
-    def new_session(self, Spieler, force=False, Datum=datetime.datetime.today()):
+    def new_session(self, Spieler:list, force=False, Datum=datetime.date.today()):
         
         #Prüfen ob Datei existiert
         if self.session_existent():
@@ -45,6 +45,12 @@ class Session:
                     file.write("")
             else:
                 raise(fileError("File existent"))
+        
+        #Prüfen, ob Spielernamen einzigartig sind
+        for S in Spieler:
+            if Spieler.count(S) > 1:
+                raise self.SpielerNamen("Nutze einzigartige Spielernamen")
+
 
         #Neues Dict erstellen
         self.data = self.__dict_new_session(Datum.strftime("%m/%d/%Y"), Spieler)
@@ -247,6 +253,8 @@ class bockFehler(Exception):
 class spielnummerFehler(Exception):
     pass
 
+class SpielerNamen(Exception):
+    pass
         
 
     

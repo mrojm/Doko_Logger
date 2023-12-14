@@ -3,17 +3,15 @@ from pathlib import Path
 import csv
 import pandas as pd
 from Datahandling.session import Session
-import json
+from datetime import datetime
 
-#from matplotlib import pyplot as plt
-
-class Stats:
+class Global_stats:
     
-    def __init__(self, session_folder_path) -> None:
-        self.session_stats = {}
+    def __init__(self, session_folder_path, start_date = datetime(1990,1,1), end_date = datetime.today()) -> None:
+        self.session_stats = None
         self.sessions = []
         self.session_folder_path = session_folder_path
-        self.global_stats = pd.DataFrame
+        
 
         self.global_stats_keys = ["Sessions_gespielt",
                               "Sessions_gewonnen",
@@ -37,13 +35,34 @@ class Stats:
         """
 
         self.__load_sessions(session_folder_path)
-        self.make_global_stats()
+        #self.global_stats = self.calc_global_stats()
 
-        
+    def get_global_Runden_column(self, Spieler):
+        return self.session_stats[Spieler,"Runden"].cumsum()
+    
+    def get_global_Punkte_column(self,Spieler):
+        return self.session_stats[Spieler,"Punkte"].cumsum()
+            
+    def get_global_Soli_column(self,Spieler):
+        return self.session_stats[Spieler,"Soli"].cumsum()
+    
+    def get_global_Soligewonnen_column(self,Spieler):
+        return self.session_stats[Spieler,"Soli_gewonnen"].cumsum()
+    
+    def get_global_Siege_column(self,Spieler):
+        Series = self.session_stats[Spieler,"Position"].apply(lambda x: 0 if x != 1 else 1)
+        return Series.cumsum()
+       
+    def get_global_BestesSpiel_column(self,Spieler):
+        return self.session_stats[Spieler,"bestes_Spiel"].cummax()
+      
+    def get_global_SchlechtestesSpiel_column(self,Spieler):
+        return self.session_stats[Spieler,"schlechtestes_Spiel"].cummin()
+
     def __load_sessions(self, session_folder_path):
         # Für jede Session im Ordner
 
-        session_stats_list = {}
+        session_stats_list = []
         for sessionname in self.__get_sessions(session_folder_path):
 
             #Ordner Name
@@ -52,21 +71,22 @@ class Stats:
             #Session erstellen und laden
             session = Session(sessionname, folder, add_json=False)
             session.load_session()
+            
+            #Check if Session empty
+            if len(session.Punkte.df) == 0:
+                continue
+
             self.sessions.append(session)
 
             session_stats = session.session_stats()
             # Spieler laden und Dataframe erstellen
             for Spieler in session_stats:
-                #Falls Spieler erstmalig gesehen, neuen Eintrag machen
-                if Spieler not in session_stats_list.keys():
-                    session_stats_list[Spieler] = []
-                
                 # Sessionstats ablegen
-                session_stats_list[Spieler].append(session_stats[Spieler])
+                session_stats[Spieler]["Name"] = Spieler
+                session_stats_list.append(session_stats[Spieler])
 
-        # Daten ins Objekt laden
-        for Spieler in session_stats_list.keys():
-            self.session_stats[Spieler] = pd.DataFrame.from_records(session_stats_list[Spieler]).set_index("Datum")
+            self.session_stats = pd.DataFrame.from_records(session_stats_list).set_index(["Name","Datum"])
+            
 
             
     @staticmethod
@@ -76,90 +96,44 @@ class Stats:
                 yield file
 
 
-    def make_global_stats(self):
+    def calc_global_stats(self):
         stats = []
         for Spieler in self.session_stats.keys():
             session_stats_P = self.session_stats[Spieler]
             
             global_stats = {}
 
-            # Sessions
+            ## Sessions
             global_stats["Sessions_gespielt"] = len(session_stats_P)
 
-            # Runden
+            ## Runden
             global_stats["Runden_gespielt"] = session_stats_P["Runden"].sum()
 
-            # Soli
+            ## Soli
             global_stats["Soli_gespielt"] = session_stats_P["Soli"].sum()
             global_stats["Soli_gewonnen"] = session_stats_P["Soli_gewonnen"].sum()
 
-            # Punkte
+            ## Punkte
             global_stats["Punkte_Total"] = session_stats_P["Punkte"].sum()
 
-            # Session Siege
+            ## Session Siege
             global_stats["Sessions_gewonnen"] = session_stats_P['Position'].apply(lambda x: 0 if x != 1 else 1).sum()
 
-            #Bestes Spiel
+            ## Bestes Spiel
             global_stats["bestes_Spiel"] = session_stats_P["bestes_Spiel"].max()
 
-            #Bestes Spiel
+            ##Bestes Spiel
             global_stats["schlechtestes_Spiel"] = session_stats_P["schlechtestes_Spiel"].min()
 
             stats.append(global_stats)
 
-        self.global_stats = pd.DataFrame.from_records(stats, index = self.session_stats.keys())
+        return pd.DataFrame.from_records(stats, index = self.session_stats.keys())
     
+    def save_globalstats_csv(self, filepath):
+        self.global_stats.to_csv(Path.joinpath(filepath,'globalstats.csv'), index = False)
 
-    def __old_global_stats(self, sessionnames, filenames_include_json_ending = True):
-        
-        # Global Stats Dict
-        global_stats = {}
+    def save_sessionstats_csv(self, filepath):
+        for Spieler in self.session_stats.keys():
+            self.global_stats[Spieler].to_csv(Path.joinpath(filepath,'sessionstats'+ Spieler +'.csv'), index = True)
 
-        #Alle Sessions durchgehen
-        for sessionname in sessionnames:
-            
-            # Session laden und Statistik abrufen
-            session = Session(sessionname, add_json= not filenames_include_json_ending)
-            session.load_session()
-            session_stats = session.session_stats()
 
-            # Für jeden Spieler eintrag schreiben und updaten
-            for Spieler in Spieler:
-                #Session Statistik von Spieler
-                session_stats_P = session_stats[Spieler]
-
-                # Eintrag erstellen, falls Spieler das erste Mal auftaucht
-                if Spieler not in global_stats.keys():
-                    global_stats[Spieler]={"Sessions":[],
-                                           "Global":{"Sessions_gespielt":0,
-                                                     "Sessions_gewonnen":0,
-                                                     "Runden_gespielt":0, 
-                                                     "Soli_gespielt":0, 
-                                                     "Soli_gewonnen":0, 
-                                                     "Punkte_Total":0, 
-                                                     "bestes_Spiel": -10000, 
-                                                     "schlechtestes_Spiel": 10000}}
-                    
-                # Session_stats in Globalstats eintragen
-                global_stats[Spieler]["Sessions"].append(session_stats_P)
-
-                #Globale Statistik mit Sessionstatistik updaten
-                global_performance = global_stats[Spieler]["Global"]
-
-                # Zählen
-                global_performance["Sessions_gespielt"] += 1
-                global_performance["Soli_gespielt"] += session_stats_P["Soli_gespielt"]
-                global_performance["Soli_gewonnen"] += session_stats_P["Soli_gewonnen"]
-                global_performance["Punkte_Total"] += session_stats_P["Punkte_Total"]
-
-                # Session_Siege
-                if session_stats_P["Position"] == 1:
-                    global_stats[Spieler]["Sessions_gewonnen"] += 1
-
-                # Bestes Spiel / Schlechtestes Spiel
-                if session_stats_P["bestes_Spiel"] > global_performance["bestes_Spiel"]:
-                    global_performance["bestes_Spiel"] = session_stats_P["bestes_Spiel"]
-                if session_stats_P["schlechtestes_Spiel"] < global_performance["schlechtestes_Spiel"]:
-                    global_performance["schlechtestes_Spiel"] = session_stats_P["schlechtestes_Spiel"]
-
-        return global_stats
