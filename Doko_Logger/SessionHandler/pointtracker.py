@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-class Points:
+class PointTracker:
 
     def __init__(self, Spieler):
         self.Spieleranzahl = len(Spieler)

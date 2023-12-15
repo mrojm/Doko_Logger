@@ -1,6 +1,6 @@
 from dateutil.parser import parse
 
-def session_stats(session):
+def Results(session):
     # Load Session Module for Session Points
     #session = Session(filename, add_json=False)
     #session.load_session()

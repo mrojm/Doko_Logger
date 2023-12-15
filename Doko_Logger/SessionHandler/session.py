@@ -1,8 +1,8 @@
 import datetime
 import json
 from os import path
-from Datahandling.points import Points
-from Datahandling.session_stats import session_stats
+from SessionHandler.pointtracker import PointTracker
+from SessionHandler.results import Results as rs
 
 class Session:
     
@@ -10,12 +10,12 @@ class Session:
         
         #Datendatei name
         #path = ".\\Sessions\\"
-        path = ".\\" + folder + "\\"
+        path = folder + "\\"
         if add_json:
             add_json = ".json"
         else:
             add_json = ""
-        self.filename = path +''+ filename + add_json
+        self.filename = path + filename + add_json
 
         #Dict mit Session_Info und Spieleinträgen
         self.data = {}
@@ -30,7 +30,7 @@ class Session:
         self.SOLO = "SOLO"
 
         # Punktestand
-        self.Punkte = Points
+        self.Punkte = PointTracker
 
         #Register Exceptions
         self.register_exceptions()
@@ -49,7 +49,7 @@ class Session:
         #Prüfen, ob Spielernamen einzigartig sind
         for S in Spieler:
             if Spieler.count(S) > 1:
-                raise self.SpielerNamen("Nutze einzigartige Spielernamen")
+                raise SpielerNamen("Nutze einzigartige Spielernamen")
 
 
         #Neues Dict erstellen
@@ -66,7 +66,7 @@ class Session:
         self.Spieleranzahl = len(self.Spieler)
 
         #Punktetracker erstellen
-        self.Punkte = Points(self.Spieler)    
+        self.Punkte = PointTracker(self.Spieler)    
     
     def session_existent(self):
         return path.isfile(self.filename)
@@ -76,6 +76,15 @@ class Session:
         if not self.session_existent():
             raise(fileError("File nonexistent"))
 
+        #Zustand löschen
+        #Dict mit Session_Info und Spieleinträgen
+        self.data = {}
+
+        #Hilfsvariablen für schnellen Zugriff
+        self.Bockrunden = []
+        self.Spieler = []
+        self.Spieleranzahl = 0
+        
         #DICT aus JSON laden
         with open(self.filename,"r") as file:
             self.data = json.load(file)
@@ -87,7 +96,7 @@ class Session:
         #Bockrunden und Punkte füllen
         Spiele = self.data["Spiele"]
         
-        self.Punkte = Points(self.Spieler)
+        self.Punkte = PointTracker(self.Spieler)
         
         
         for Spiel in Spiele:
@@ -154,28 +163,28 @@ class Session:
 
         return spiel
 
-    def session_stats(self):
+    def Results(self):
         # Returns Session stats as dict
-        return session_stats(self)
+        return rs(self)
 
-    def __update_Bockrunden(self, Bockrunden, nBr):
+    def __update_Bockrunden(self, l_Bockrunden, nBr):
         #Bockrunden als queue gespeichert, jeder Eintrag enthält Lebensdauer der Bockrunde
         #Bsp.: [1,3,4] -> 3 Bockrunden
 
         #Lebensdauer um einen verringern, falls 0-> aus queue entfernen        
-        lock = len(Bockrunden)
+        lock = len(l_Bockrunden)
         i = 0
         while(i < lock):
-            Bockrunden[i] -=1
-            if(Bockrunden[i] == 0):
-                Bockrunden.pop(0)
+            l_Bockrunden[i] -=1
+            if(l_Bockrunden[i] == 0):
+                l_Bockrunden.pop(0)
                 i -= 1
                 lock -=1
             i +=1
 
         #Neue Bockrunden hinzufügen (Leben so lange, wie Spieler sind)
         for __ in range(nBr):
-            Bockrunden.append(self.Spieleranzahl)
+            l_Bockrunden.append(self.Spieleranzahl)
     
     
     def __dict_Spieleintrag(self, Spiel: int, Spieler:list, Spieltyp, Gewinner:list, Punkte, BR, nBR):
@@ -187,7 +196,7 @@ class Session:
             raise(gewinnerAnzahl("Gewinneranzahl"))  
         if(Spieltyp == self.SOLO and len(Gewinner)==2):
             raise(gewinnerAnzahl("Gewinneranzahl")) 
-        if(len(Gewinner)==4):
+        if(len(Gewinner) < 1 or len(Gewinner) > 3):
             raise(gewinnerAnzahl("Gewinneranzahl"))
         if(Punkte<=0):
             raise(punkteFehler("Punktefehler"))

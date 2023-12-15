@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-from Datahandling import Session
 import datetime
+
+from SessionHandler.session import Session
 
 LARGEFONT =("Verdana", 30)
 
@@ -12,7 +13,7 @@ class Menu(tk.Frame):
 		# label of frame Layout 2
 		label = ttk.Label(self, text ="DoKo Spieletracker  \n",font = LARGEFONT)
 		label.place(x=10,y=10,width=500,height=54) 
-		self.config( width=500 )
+		self.config( width=500, height=400)
 
 		#Session_Name
 		self.sessionname_input = ttk.Entry(self, width=10)
@@ -29,10 +30,14 @@ class Menu(tk.Frame):
 		## button to show frame 2 with text layout2
 		self.load_session = ttk.Button(self, text ="Alte Session \nladen", command = self.load_session)
 		self.load_session.place(x=190,y=180,width=100,height=50)
-	
+
+		# Stats Button
+		stats = ttk.Button(self, text="Stats", command = lambda : self.controller.show_frame(self.controller.pages[3]))
+		stats.place(x=310, y = 180, width=100, height=50)
+
 	def new_session(self):
 		session_name = self.sessionname_input.get().strip()
-		session = Session(session_name, self.controller.Session_Folder)
+		session = Session(session_name, self.controller.Session_Folder_Path)
 		if session_name != "" and not session.session_existent():
 			self.controller.session = session
 			self.controller.show_frame(self.controller.pages[1])
@@ -41,7 +46,7 @@ class Menu(tk.Frame):
 	def load_session(self):
 		session_name = self.sessionname_input.get().strip()
 		if session_name != "":
-			session = Session(session_name, self.controller.Session_Folder)
+			session = Session(session_name, self.controller.Session_Folder_Path)
 
 			if session.session_existent():
 				session.load_session()
@@ -49,8 +54,4 @@ class Menu(tk.Frame):
 
 				self.controller.build_frame(self.controller.pages[2])
 				self.controller.show_frame(self.controller.pages[2])
-	
-	#def stats(self):
-	#	self.controller.build_frame(self.controller.pages[3])
-	#	self.controller.show_frame(self.controller.pages[3])
 		

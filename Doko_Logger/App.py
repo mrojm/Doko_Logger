@@ -1,12 +1,15 @@
 import tkinter as tk
-from tkinter import ttk
-from Pages.Datahandling import Session
 
-from Pages import Menu, Players, Gamelog
+from Pages.menu import Menu
+from Pages.players import Players
+from Pages.gamelog import Gamelog
+from Pages.statplots import Statplots
+
+from SessionHandler.session import Session
 
 LARGEFONT =("Verdana", 35)
-
 Session_Folder = "Test_Sessions"
+Session_Folder_Path = ".\\"+Session_Folder
 
 class tkinterApp(tk.Tk):
 	
@@ -16,8 +19,8 @@ class tkinterApp(tk.Tk):
 
 		
 		#MEIN KRAM
-		self.Session_Folder = Session_Folder
-		self.session = Session('temp', self.Session_Folder)
+		self.Session_Folder_Path = Session_Folder_Path
+		self.session = Session('temp', self.Session_Folder_Path)
 		#self.session.new_session(["A","B","C","D","E"], force=True)
 
 		# __init__ function for class Tk
@@ -34,7 +37,7 @@ class tkinterApp(tk.Tk):
 		self.container = container
 
 		# initializing frames to an empty array
-		self.pages = [Menu, Players, Gamelog]
+		self.pages = [Menu, Players, Gamelog, Statplots]
 		self.frames = {} 
 
 		# iterating through a tuple consisting

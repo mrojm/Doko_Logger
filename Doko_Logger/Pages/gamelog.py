@@ -140,10 +140,14 @@ class Gamelog(tk.Frame):
             self.speichern.state(["disabled"])
             self.game_to_edit.state(["disabled"])
             self.clear_inputs()
+            self.reset_buttons()
+            self.reset_radiobuttons()
 
             for i in range(len(self.Spieler)):
                 if self.Spieler[i] not in data["Spieler"]:
                     self.button_function(i)
+            
+            for i in range(len(self.Spieler)):
                 if self.Spieler[i] in data["Gewinner"]:
                     self.checkboxes[i].invoke()
 

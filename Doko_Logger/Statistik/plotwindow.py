@@ -4,13 +4,11 @@ from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 # Implement the default Matplotlib key bindings.
 from matplotlib.backend_bases import key_press_handler
-from matplotlib.figure import Figure
 
-import numpy as np
 
-def Graph(figure):
+def PlotWindow(figure):
     root = tkinter.Tk()
-    root.wm_title("Embedding in Tk")
+    root.wm_title("DoKo Statistik")
 
     canvas = FigureCanvasTkAgg(figure, master=root)  # A tk.DrawingArea.
     canvas.draw()
